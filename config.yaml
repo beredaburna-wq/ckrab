@@ -1,0 +1,48 @@
+# ckrab Configuration
+
+# Video output settings
+video:
+  resolution: "1280x720"  # width x height, or "auto" for source resolution
+  fps: 30
+  codec: "libx264"  # or "libx265" for H.265
+  quality: "high"  # low, medium, high
+  bitrate: "8000k"  # bitrate for output
+
+# Model settings
+model:
+  name: "stable-video-diffusion"  # or other supported models
+  precision: "fp16"  # fp32 for CPU, fp16 for GPU
+  device: "cpu"  # auto, cpu, cuda, mps
+
+# Generation parameters
+generation:
+  num_frames: 24  # Number of frames to generate
+  duration: 3  # Duration in seconds (overrides if set)
+  motion_intensity: 0.5  # 0.0-1.0, controls camera/object motion
+  guidance_scale: 7.5  # 1.0-20.0, higher = more adherence to input
+  num_inference_steps: 25  # More steps = better quality but slower
+
+# Processing
+processing:
+  interpolation: true  # Interpolate frames for smoother video
+  upscale: false  # Upscale output video
+  denoise: true  # Apply denoising filter
+  color_correction: true  # Auto color correction
+
+# Performance (for Termux/mobile)
+performance:
+  batch_size: 1  # Reduce for low-memory devices
+  memory_efficient: true  # Enable memory optimization
+  enable_attention_slicing: true  # Required for low-memory devices
+  cpu_offload: true  # Offload to CPU when not needed
+
+# Input/Output
+paths:
+  input_dir: "./inputs"
+  output_dir: "./outputs"
+  model_cache_dir: "./models"
+
+# Logging
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  verbose: false

@@ -1,0 +1,24 @@
+# Core dependencies
+numpy>=1.21.0
+opencv-python>=4.5.0
+Pillow>=8.0.0
+requests>=2.26.0
+
+# ML/Video generation
+torch>=1.9.0
+torchvision>=0.10.0
+diffusers>=0.21.0
+transformers>=4.30.0
+
+# Video processing
+moviepy>=1.0.0
+ffmpeg-python>=0.2.1
+
+# Utilities
+tqdm>=4.62.0
+pyyaml>=5.4.0
+click>=8.0.0
+
+# Optional: For GPU acceleration (uncomment as needed)
+# torch-cuda  # For NVIDIA GPUs
+# torch-xpu   # For Intel Arc GPUs
