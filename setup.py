@@ -1,4 +1,4 @@
-"""Setup script for ckrab package."""
+"""Setup script for xckrab package."""
 
 from setuptools import setup, find_packages
 
@@ -6,10 +6,10 @@ with open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
-    name="ckrab",
-    version="0.1.0",
+    name="xckrab",
+    version="0.2.0",
     author="beredaburna-wq",
-    description="Uncensored image-to-video generator optimized for mobile devices",
+    description="Text-to-Image-to-Video generator optimized for mobile devices",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/beredaburna-wq/ckrab",
@@ -35,6 +35,8 @@ setup(
         "torchvision>=0.10.0",
         "diffusers>=0.21.0",
         "transformers>=4.30.0",
+        "accelerate>=0.20.0",
+        "safetensors>=0.3.0",
         "moviepy>=1.0.0",
         "ffmpeg-python>=0.2.1",
         "tqdm>=4.62.0",
@@ -43,7 +45,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "ckrab=cli:cli",
+            "xckrab=cli:cli",
         ],
     },
 )

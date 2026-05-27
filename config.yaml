@@ -1,45 +1,50 @@
-# ckrab Configuration
+# xckrab Configuration
+
+# Text-to-Image Generation
+text_to_image:
+  model: "stable-diffusion-2.1"  # Options: stable-diffusion-2.1, stable-diffusion-3, flux-1-dev
+  resolution: "768x512"  # width x height
+  num_inference_steps: 30  # More steps = higher quality but slower
+  guidance_scale: 7.5  # 1.0-20.0, higher = more adherence to prompt
+  negative_prompt: "blurry, low quality, distorted"
+  seed: null  # Set to integer for reproducibility, or null for random
+
+# Image-to-Video Generation
+image_to_video:
+  model: "stable-video-diffusion-img2vid"
+  duration: 5  # Duration in seconds
+  fps: 30
+  num_frames: 24
+  num_inference_steps: 25
+  guidance_scale: 7.5
+  motion_intensity: 0.5  # 0.0-1.0
 
 # Video output settings
 video:
-  resolution: "1280x720"  # width x height, or "auto" for source resolution
-  fps: 30
   codec: "libx264"  # or "libx265" for H.265
+  bitrate: "8000k"
   quality: "high"  # low, medium, high
-  bitrate: "8000k"  # bitrate for output
 
 # Model settings
 model:
-  name: "stable-video-diffusion"  # or other supported models
   precision: "fp16"  # fp32 for CPU, fp16 for GPU
   device: "cpu"  # auto, cpu, cuda, mps
 
-# Generation parameters
-generation:
-  num_frames: 24  # Number of frames to generate
-  duration: 3  # Duration in seconds (overrides if set)
-  motion_intensity: 0.5  # 0.0-1.0, controls camera/object motion
-  guidance_scale: 7.5  # 1.0-20.0, higher = more adherence to input
-  num_inference_steps: 25  # More steps = better quality but slower
-
-# Processing
-processing:
-  interpolation: true  # Interpolate frames for smoother video
-  upscale: false  # Upscale output video
-  denoise: true  # Apply denoising filter
-  color_correction: true  # Auto color correction
-
 # Performance (for Termux/mobile)
 performance:
-  batch_size: 1  # Reduce for low-memory devices
-  memory_efficient: true  # Enable memory optimization
-  enable_attention_slicing: true  # Required for low-memory devices
-  cpu_offload: true  # Offload to CPU when not needed
+  batch_size: 1
+  memory_efficient: true
+  enable_attention_slicing: true
+  cpu_offload: true
+  use_safetensors: true
 
 # Input/Output
 paths:
+  prompt_file: "./prompts.txt"
   input_dir: "./inputs"
   output_dir: "./outputs"
+  images_dir: "./generated_images"
+  videos_dir: "./generated_videos"
   model_cache_dir: "./models"
 
 # Logging
