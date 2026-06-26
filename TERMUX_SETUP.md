@@ -19,7 +19,7 @@ apt update && apt upgrade
 ### 2. Install Python and System Dependencies
 
 ```bash
-apt install python pip git clang make libjpeg-turbo-dev zlib-dev
+apt install python pip git clang make libjpeg-turbo-dev zlib-dev libffi-dev
 ```
 
 ### 3. Clone the Repository
@@ -34,6 +34,17 @@ cd ckrab
 ```bash
 pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
+```
+
+**Important for Termux**: If you encounter `ModuleNotFoundError` during installation, install critical dependencies one-by-one:
+
+```bash
+# Core dependencies (install in this order)
+pip install numpy
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+pip install transformers
+pip install accelerate
+pip install diffusers pillow opencv-python
 ```
 
 Note: On Termux with limited resources, this may take a while. Consider installing packages one by one if you encounter memory issues.
@@ -113,12 +124,37 @@ python cli.py generate --input ~/storage/pictures/image.jpg --output ~/storage/m
 
 ## Troubleshooting
 
+### "ModuleNotFoundError: No module named 'diffusers'"
+
+**Cause**: Dependency installation failed during initial setup.
+
+**Solution**: Install critical dependencies individually:
+
+```bash
+pip install --no-cache-dir numpy
+pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+pip install --no-cache-dir transformers
+pip install --no-cache-dir accelerate
+pip install --no-cache-dir diffusers pillow
+```
+
+### "No matching distribution found for accelerators"
+
+**Cause**: Typo in pip install command (package name is `accelerate`, not `accelerators`).
+
+**Solution**: Use the correct package name:
+
+```bash
+pip install accelerate
+```
+
 ### "Not enough memory" Error
 
 1. Close all background apps
 2. Reduce batch size: `batch_size: 1` in config
 3. Use fewer inference steps
 4. Clear Termux cache: `rm -rf ~/.cache/huggingface/`
+5. Increase Termux memory limits (if available in your phone settings)
 
 ### Model Download Issues
 
@@ -149,6 +185,18 @@ CPU inference on mobile is intentionally slow. To speed up:
 1. **Use Google Colab** with GPU for faster processing
 2. **Reduce complexity** in config (lower steps, resolution, etc.)
 3. **Pre-process images** to smaller sizes before generation
+
+### ImportError or Missing Dependencies on First Run
+
+If you get import errors when running the CLI for the first time:
+
+```bash
+# Reinstall requirements with verbose output
+pip install -v -r requirements.txt
+
+# Or install from scratch without cache
+pip install --no-cache-dir -r requirements.txt
+```
 
 ## Recommended Settings for Mobile
 
@@ -181,6 +229,7 @@ performance:
 - **Termux Wiki**: https://wiki.termux.com/
 - **Hugging Face Models**: https://huggingface.co/models
 - **PyTorch on Mobile**: https://pytorch.org/mobile/
+- **Diffusers Documentation**: https://huggingface.co/docs/diffusers
 
 ## Support
 
