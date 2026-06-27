@@ -68,7 +68,7 @@ class ImageToVideoGenerator:
             if self.config.get("performance", {}).get("enable_attention_slicing", True):
                 self.pipe.enable_attention_slicing()
 
-            if self.config.get("performance", {}).get("cpu_offload", True):
+            if self.config.get("performance", {}).get("cpu_offload", False):
                 self.pipe.enable_sequential_cpu_offload()
 
             self.model_loaded = True
@@ -123,14 +123,16 @@ class ImageToVideoGenerator:
         logger.info("Generating video frames...")
         try:
             with torch.no_grad():
-                frames = self.pipe(
+                result = self.pipe(
                     image=image,
                     height=576,
                     width=1024,
                     num_frames=int(duration * fps),
                     num_inference_steps=num_inference_steps,
                     guidance_scale=guidance_scale,
-                ).frames[0]
+                )
+                # Extract frames from result
+                frames = result.frames[0] if hasattr(result, 'frames') else result
         except Exception as e:
             logger.error(f"Failed to generate frames: {e}")
             raise
@@ -155,6 +157,10 @@ class ImageToVideoGenerator:
             output_path: Output video path
             fps: Frames per second
         """
+        # Validate frames
+        if not frames or len(frames) == 0:
+            raise ValueError("No frames to save")
+
         # Create output directory
         Path(output_path).parent.mkdir(parents=True, exist_ok=True)
 
@@ -162,8 +168,15 @@ class ImageToVideoGenerator:
         frames_array = []
         for frame in tqdm(frames, desc="Processing frames"):
             if isinstance(frame, Image.Image):
+                # Ensure image is in RGB mode before conversion
+                if frame.mode != 'RGB':
+                    frame = frame.convert('RGB')
                 frame = cv2.cvtColor(np.array(frame), cv2.COLOR_RGB2BGR)
             frames_array.append(frame)
+
+        # Validate frames_array before accessing dimensions
+        if not frames_array:
+            raise ValueError("Failed to process any frames")
 
         # Get frame dimensions
         height, width = frames_array[0].shape[:2]
@@ -194,7 +207,7 @@ class ImageToVideoGenerator:
         image_extensions = {".jpg", ".jpeg", ".png", ".bmp", ".gif"}
         image_files = [
             f for f in os.listdir(image_dir)
-            if Path(f).suffix.lower() in image_extensions
+            if Path(os.path.join(image_dir, f)).suffix.lower() in image_extensions
         ]
 
         logger.info(f"Found {len(image_files)} images to process")
